@@ -1,12 +1,16 @@
-import java.io.File;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.ProcessBuilder.Redirect;
-import java.net.URISyntaxException;
-import java.security.CodeSource;
 import java.util.Scanner;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Riso {
 	
@@ -18,66 +22,170 @@ public class Riso {
 	static String element;
 	static String type;
 	
-	static boolean worked = false;
-	static int gui = 1;
-	static int check =  1;
-	
 	public static void main(String[] args) throws IOException {
+		MyGui();
+		esecuzione();
+	}
+	
+	static void MyGui() {
+		
+		   //Create jpannel and jlabel
+		   JPanel jp = new JPanel();
+	       JLabel jl = new JLabel();
+	       JLabel jl2 = new JLabel();
+	       //delcale buttons
+		   JButton bottoneSomma = new JButton("Somma");
+		   JButton bottoneSottrazione = new JButton("Sottrai");
+		   JButton bottoneMoltiplicazione = new JButton("Moltiplica");
+		   JButton bottoneDivisione = new JButton("Divisione");
+		   //max char text
+	       JTextField dato = new JTextField(2);
+	       JTextField dato2 = new JTextField(2);
+	       //inseriment button
+	       JButton conferma = new JButton("Calcola!");
+	       //window title
+	       JFrame window = new JFrame("Calculator-v0.2");
+	       window.setVisible(true);
+	       window.setSize(400, 200);
+	       window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	       //add text pannel
+	       jp.add(dato);
+	       jp.add(dato2);
+	            //create second pannel group button
+	            JPanel panel = new JPanel();
+	      		window.getContentPane().add(panel, BorderLayout.SOUTH);
+	    		panel.add(bottoneSomma);
+	    		panel.add(bottoneSottrazione);
+	    		panel.add(bottoneMoltiplicazione);
+	    		panel.add(bottoneDivisione);
+	    			
+		dato.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String input = dato.getText();
+				jl.setText(input);
+			}
+		});
 
-		if (gui == 1) {
-			try {
-				CodeSource codeSource = Riso.class.getProtectionDomain().getCodeSource();
-				File jarFile = new File(codeSource.getLocation().toURI().getPath());
-				String jarDir = jarFile.getParentFile().getPath();
+		
+		dato2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String input2 = dato2.getText();
+				jl2.setText(input2);
+			}
+		});
+		
+		jp.add(conferma);
+		
+		JLabel TextInWindow = new JLabel("NOT SELECTED");
+		window.add(TextInWindow, BorderLayout.NORTH);
+		TextInWindow.setForeground(Color.RED);
+		
+		bottoneSomma.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Waiting(1);
+				somma = true;
+				sottrazione = false;
+				moltipilicazione = false;
+				divisione = false;
+				TextInWindow.setText("Somma"); 
+				TextInWindow.setForeground(Color.GREEN);
+			}
+		});
+		bottoneSottrazione.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Waiting(1);
+				somma = false;
+				sottrazione = true;
+				moltipilicazione = false;
+				divisione = false;
+				TextInWindow.setText("Sottrazione"); 
+				TextInWindow.setForeground(Color.GREEN);
+			}
+		});
+		bottoneMoltiplicazione.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Waiting(1);
+				somma = false;
+				sottrazione = false;
+				moltipilicazione = true;
+				divisione = false;
+				TextInWindow.setText("Moltiplicazione");
+				TextInWindow.setForeground(Color.GREEN);
+			}
+		});
+		bottoneDivisione.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Waiting(1);
+				somma = false;
+				sottrazione = false;
+				moltipilicazione = false;
+				divisione = true;
+				TextInWindow.setText("Divisione");
+				TextInWindow.setForeground(Color.GREEN);
+			}
+		});
+		
+		conferma.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				
-				if (check == 0) {
-					gui = 2;
-					worked = true;
-				} else if (check == 1) {
-					Runtime.getRuntime().exec("java -jar " +  jarDir);
-					check = 0;
+				String input = dato.getText();
+				String input2 = dato2.getText();
 				
+				if(somma == false && sottrazione == false && moltipilicazione == false && divisione == false) {
+					jl.setText("Nessuna Opzione Selezionata.");	
 				}
-			} catch (UnsupportedEncodingException e) {
-				CreateDisplays();
-			} catch (URISyntaxException e) {
-				CreateDisplays();
+				if(somma ==true) {
+					jl.setText(input + " + " + input2 +  " = " + somma(PretendStringToInt(input) , PretendStringToInt(input2)));
+				}
+				if(sottrazione ==true) {
+					jl.setText(input + " - " + input2 +  " = " + sottrazione(PretendStringToInt(input) , PretendStringToInt(input2)));
+				}
+				if(moltipilicazione ==true) {
+					jl.setText(input + " * " + input2 +  " = " +  moltipilicazione(PretendStringToInt(input) , PretendStringToInt(input2)));
+				}
+				if(divisione ==true) {
+					jl.setText(input + " / " + input2 +  " = " +  divisione(PretendStringToInt(input) , PretendStringToInt(input2)));
+				} 
 			}
-		}
-		else if(worked == true && gui == 2) {
-			 onPre();
-				try  {
-					System.out.println("Inserisci il primo numero: ");
-					Scanner scanner = new Scanner(System.in);
-					String stringa1 = scanner.nextLine();
-					
-					System.out.println("Inserisci il secondo numero: ");
-					Scanner scanner2 = new Scanner(System.in);
-					String stringa2 = scanner2.nextLine();
-					
-					if(element == null || element == "") {
-						System.out.println("Errore Inserimento Non Definito!");
-					}
-					
-					System.out.println("[System] -> Syntax Type of (" + type + ") " + stringa1 + " " + element + " " + stringa2);
-					
-					if(somma ==true) {
-						System.out.println("Risultato (Somma) "+ somma(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
-					}
-					if(sottrazione ==true) {
-						System.out.println("Risultato (Sottrazione) "+ sottrazione(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
-					}
-					if(moltipilicazione ==true) {
-						System.out.println("Risultato (Moltiplicazione) "+ moltipilicazione(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
-					}
-					if(divisione ==true) {
-						System.out.println("Risultato (Divisione) "+ divisione(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
-					}
-				}catch(Exception e) {
-					System.out.println("\n[System] -> Errore, impossibile Eseguire La Seguente Operazione");
-					CreateDisplays();
-					System.exit(0);
-			}
+		});
+
+		jp.add(jl);
+		window.add(jp);
+	}
+	
+	static void esecuzione() {
+		 onPre();
+			try  {
+				System.out.println("Inserisci il primo numero: ");
+				Scanner scanner = new Scanner(System.in);
+				String stringa1 = scanner.nextLine();
+				
+				System.out.println("Inserisci il secondo numero: ");
+				Scanner scanner2 = new Scanner(System.in);
+				String stringa2 = scanner2.nextLine();
+				
+				if(element == null || element == "") {
+					System.out.println("Errore Inserimento Non Definito!");
+				}
+				
+				System.out.println("[System] -> Syntax Type of (" + type + ") " + stringa1 + " " + element + " " + stringa2);
+				
+				if(somma ==true) {
+					System.out.println("Risultato (Somma) "+ somma(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
+				}
+				if(sottrazione ==true) {
+					System.out.println("Risultato (Sottrazione) "+ sottrazione(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
+				}
+				if(moltipilicazione ==true) {
+					System.out.println("Risultato (Moltiplicazione) "+ moltipilicazione(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
+				}
+				if(divisione ==true) {
+					System.out.println("Risultato (Divisione) "+ divisione(PretendStringToInt(stringa1) , PretendStringToInt(stringa2)));
+				}
+			}catch(Exception e) {
+				System.out.println("\n[System] -> Errore, impossibile Eseguire La Seguente Operazione");
+				CreateDisplays();
+				System.exit(0);
 		}
 	}
 	
@@ -150,6 +258,14 @@ public class Riso {
 		}else if(divisione) {
 			element = "/";
 			type = "Divisione";
+		}
+	}
+	
+	static void Waiting(int sec) {
+		try {
+			Thread.sleep(1000* sec);
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
