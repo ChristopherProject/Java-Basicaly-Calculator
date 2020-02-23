@@ -7,7 +7,7 @@ for begin to learn this, i have make for anyone want start
 learn java code.
 
 Usage:
-java -jar obfuscator.jar Calculator.jar
+java -jar Calculator.jar
 
 thanks for reading
 bye
